@@ -3,7 +3,8 @@ const { shell } = require('electron');
 import * as React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import Octicon, { Check } from '@primer/octicons-react';
+import Octicon, { Check, Versions } from '@primer/octicons-react';
+import { generateGitHubWebUrl } from '../utils/helpers';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import { markRepoNotifications } from '../actions';
@@ -65,6 +66,16 @@ export const RepositoryNotifications: React.FC<IProps> = (props) => {
     shell.openExternal(url);
   };
 
+  const openAllInBrowser = () => {
+    for (let obj in props.repoNotifications) {
+      // Some Notification types from GitHub are missing urls in their subjects.
+      if (props.repoNotifications[obj].subject.url) {
+        const url = generateGitHubWebUrl(props.repoNotifications[obj].subject.url);
+        shell.openExternal(url);
+      }
+    }
+  };
+
   const markRepoAsRead = () => {
     const { hostname, repoNotifications } = props;
     const repoSlug = repoNotifications[0].repository.full_name;
@@ -81,6 +92,16 @@ export const RepositoryNotifications: React.FC<IProps> = (props) => {
           <Avatar src={avatarUrl} />
           <span onClick={openBrowser}>{props.repoName}</span>
         </TitleBar>
+
+        <IconWrapper>
+          <Button onClick={openAllInBrowser}>
+            <Octicon
+              icon={Versions}
+              size={20}
+              ariaLabel="Open all notifications"
+            />
+          </Button>
+        </IconWrapper>
 
         <IconWrapper>
           <Button onClick={markRepoAsRead}>
