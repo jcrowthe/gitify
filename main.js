@@ -12,7 +12,7 @@ const browserWindowOpts = {
   height: 400,
   minWidth: 500,
   minHeight: 400,
-  resizable: false,
+  resizable: true,
   webPreferences: {
     overlayScrollbars: true,
     nodeIntegration: true,
